@@ -42,4 +42,3 @@ elseif strcmp(type,'t')
     yesttot = sum(yest,2);
 
 end
-
