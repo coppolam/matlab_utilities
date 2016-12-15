@@ -1,4 +1,4 @@
-function [ varargout ] = cropvectors(lims, varargin)
+function [ varargout ] = crop_all(lims, varargin)
 %cropvectors Crops all input vectors with the same limits, avoids writing the same thing many times.
 % e.g. [x1_cropped, x2_cropped] = cropvectors([lowbound,highound]. x1_original, x2_original)
 %

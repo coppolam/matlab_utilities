@@ -1,5 +1,5 @@
-function [ setmat, lim ] = SetUpMembershipFunctions(x,trapnumber,type, normalize, wrap)
-%SetUpMembershipFunctions Sets up trapezoidal membership function for use
+function [ setmat, lim ] = generatemembershipfunctions(x,trapnumber,type, normalize, wrap)
+%generatemembershipfunctions Sets up trapezoidal membership function for use
 %in fuzzy sets
 
 if nargin < 5
@@ -68,7 +68,7 @@ end
 
 % Normalize
 if nargin > 3 && strcmp(normalize,'normalize')
-    setmat = NormalizeSet( setmat );
+    setmat = normalizeset( setmat );
 end
 
 end

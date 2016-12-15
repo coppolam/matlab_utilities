@@ -1,7 +1,7 @@
-function printallfigureslatex( figHandles , folder, mode, fignumbers)
-% Use: printallfigureslatex(get(0,'Children'), folder (optional), mode)
+function latex_printallfigures( figHandles , folder, mode, fignumbers)
+% Use: latex_printallfigures(get(0,'Children'), folder (optional), mode)
 %
-% Example: printallfigureslatex(get(0,'Children'), 'Figures/', 'paper_wide_half')
+% Example: latex_printallfigures(get(0,'Children'), 'Figures/', 'paper_wide_half')
 % Note that the folder must already exist! 
 %
 % Available modes:
@@ -45,16 +45,15 @@ else
 %     h = 4;
 %     f = 20;
 end
-%     keyboard
 
 if isempty(fignumbers)
     for i = 1:numel(figHandles)
-        printfiglatex(figHandles(i).Number,'figname',folder,w,h,f);
+        latex_printfig(figHandles(i).Number,'figname',folder,w,h,f);
     end
 else
     for i = 1:length(fignumbers)
         disp(['Saving figure ',num2str(fignumbers(i))]);
-        printfiglatex(fignumbers(i),'figname',folder,w,h,f);
+        latex_printfig(fignumbers(i),'figname',folder,w,h,f);
     end
 end
 

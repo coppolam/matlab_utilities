@@ -1,4 +1,4 @@
-function n = linecount(fid)
+function n = get_linecount(fid)
 %linecount counts the amount of lines in a file
 % Use: 		[number of lines (scalar)] = linecount (fid)
 %

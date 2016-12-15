@@ -1,5 +1,5 @@
-function printfiglatex(handle,filename,folder,w, h, fontsize,outtype)
-% Saves figures in eps format to be used with Latex, and under the size
+function latex_printfig(handle,filename,folder,w, h, fontsize,outtype)
+% latex_printfig Saves figures in eps format to be used with Latex, and under the size
 % specified. It needs checkFileName.m to run!.
 %
 % Developed by Mario Coppola, October 2015
@@ -51,7 +51,7 @@ set(ha_axes, 'fontsize', fontsize);
 set(ha_legend, 'fontsize', fontsize);
 set(ha_text, 'fontsize', fontsize);
 
-filename = checkFileName(filename); % Check if filename is Latex ready
+filename = latex_checkfilename(filename); % Check if filename is Latex ready
 
 %use -opengl if you have opaque things
 print(handle,outtype,filename)      % Prints the figure

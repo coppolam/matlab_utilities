@@ -1,4 +1,4 @@
-function [ varargout ] = flipudall( varargin )
+function [ varargout ] = flipud_all( varargin )
 %flipudall flips all the inputs upside down. Number of inputs must match
 %the number of outputs.
 
