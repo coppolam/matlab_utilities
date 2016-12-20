@@ -1,2 +1,5 @@
 # MATLAB Auxiliary files
 *.m~
+
+# Dependency Checker
+filelist.txt
