@@ -1,6 +1,7 @@
-%% Check dependencies
+%% Load tools
 SetupTools
 
+%% Create list of all files (UNIX ONLY)
 % Unix command to create a list of all files
 unix('sudo updatedb');
 unix('rm filelist.txt');
@@ -8,8 +9,9 @@ unix('locate "$PWD/*.m" > filelist.txt');
 
 disp('Located all MATLAB files...');
 
-%% 
+%% Check dependencies
 disp('[Tools Dependency Checker launched]');
+disp('Run this until you get no error messages.')
 
 fi = textscan(fopen('filelist.txt'), '%s', inf, 'delimiter', ' ');
 
@@ -21,16 +23,12 @@ for i = 1:size(fi{1},1)
     disp(['Checking:' fi{1}(i)])
     matlab.codetools.requiredFilesAndProducts(fi{1}(i));
     disp('                   ...no dependency issues found.')
-    % Check that the dependencies exist (the function above does this
-    % already)
-    
     
 end
 
 clear fi
 
 disp('Done checking. If this point is reached then no dependency issues are found.')
-
 disp('[Tools Dependency Checker closed]')
 
 %% Check duplicates
