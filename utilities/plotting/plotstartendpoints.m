@@ -1,5 +1,5 @@
 function plotstartendpoints(x,stpoint,endpoint,markersize)
-%PlotPath Plots the path followed in a world reference frame.
+%plotstartendpoints Plots the start and end points of a data set in a world reference frame.
 % Works for both 2D and 3D vectors.
 %
 % Developed by Mario Coppola, October 2015

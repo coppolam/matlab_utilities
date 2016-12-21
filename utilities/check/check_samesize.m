@@ -1,5 +1,5 @@
-function checksize( var1, var2, dim1, dim2)
-%checksize Checks the size of two variables and returns an error that tells
+function check_samesize( var1, var2, dim1, dim2)
+%check_samesize Checks the size of two variables and returns an error that tells
 %you the variable names to fix
 %
 % Developed by Mario Coppola, October 2015
@@ -30,4 +30,3 @@ if nargin == 4
     end
     
 end
-

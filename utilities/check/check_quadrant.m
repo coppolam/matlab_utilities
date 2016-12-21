@@ -1,5 +1,5 @@
-function [ quadrant ] = CheckQuadrant(x_act, x_est, y_act, y_est)
-%CheckQuadrant Checks if the function in the right quadrant. Output 1 if
+function [ quadrant ] = check_quadrant(x_act, x_est, y_act, y_est)
+%check_quadrant Checks if the function in the right quadrant. Output 1 if
 %correct and -1 if wrong
 %
 % Developed by Mario Coppola, October 2015

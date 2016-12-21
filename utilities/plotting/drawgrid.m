@@ -1,4 +1,6 @@
-function [] = drawgrid(fign,N,min,max)
+function drawgrid(handle,N,min,max,color)
+%drawgrid draws an evenly spaced out grid on the plot (square) between the specified limits
+% TODO: Make it so x and y do not have to be the same but can be independent
 
 if nargin < 1
     error('Please give a figure number at least')
@@ -8,22 +10,25 @@ if nargin>1 && nargin < 4
     error('Indicate size fully')
 end
 
+if nargin<5
+	color = [0 0 0];
+end
+
 x = linspace(min,max,N+1);
 y = linspace(min,max,N+1);
 
-figure(fign)
+figure(handle)
+hold on
 
 % Horizontal grid
 for k = 1:length(y)
-    figure(1)
-    line([x(1) x(end)], [y(k) y(k)])
+    line([x(1) x(end)], [y(k) y(k)],'color',[color])
 end
 
 % Vertical grid
 for k = 1:length(y)
-    figure(1)
-    line([x(k) x(k)], [y(1) y(end)])
+    line([x(k) x(k)], [y(1) y(end)],'color',color)
 end
-hold on
 
-axis square
+xlim([x(1) x(end)])
+ylim([x(1) x(end)])

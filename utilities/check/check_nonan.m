@@ -1,5 +1,5 @@
-function checknan( varargin )
-%checknan Checks and gives an error if any of the input values are NaN
+function check_nonan( varargin )
+%check_nonan Checks and gives an error if any of the input arrays contain NaN.
 
 for i = 1:nargin
     

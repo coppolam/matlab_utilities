@@ -1,5 +1,5 @@
-function checkmag( reference, mode , varargin )
-%checkmag Checks the magnitude of one or more variables against a reference
+function check_mag( reference, mode , varargin )
+%check_mag Checks the magnitude of one or more variables against a reference
 % and returns an error if the magnitude does not comply
 %
 % You should program in the desired setting. Let's say we have reference

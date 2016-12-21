@@ -1,5 +1,5 @@
-function [ correct ] = CheckSign( act, est )
-%CheckSign Outputs a vector with 1 if the signs of a vector are the same
+function [ correct ] = check_samesign( act, est )
+%check_samesign Outputs a vector with 1 if the signs of a vector are the same
 %and 0 if they are not
 %
 % Developed by Mario Coppola, October 2015

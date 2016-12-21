@@ -1,20 +1,24 @@
-function makemovie_slidingplot(x, y, varargin )
+function makemovie_pathtopview(x, y, time, varargin )
 %makemovie_slidingplot Makes a movie that moves along the image that can be
 %very nice for videos.
 % It requires a minimum of 3 inputs: (n, x, y)
 %   where
 %   x = x vector(s). If more than one, then use cells.
 %   y = y vector(s). If more than one, then use cells.
+%   time = time vector defining at which time point the x,y coordinates
+%   were recorded
 %
 %   Basic example of usage, try it out!
 %
-%       clear x y
+%       clear x y time
 %
-%       x{1} = 0:0.01:10;
-%       y{1} = sin(x{1});
-%       x{2} = 0:0.05:9;
-%       y{2} = sin(2*x{2});
-%       makemovie_slidingplot(x,y)
+%       x{1} = linspace(-1,1,100);
+%       y{1} = sin(1:100);% 
+%       time{1} = 1:100;
+%       x{2} = linspace(0,2,1000);
+%       y{2} = sin(1:1000); 
+%       time{2} = 1:0.1:100;
+%       makemovie_pathtopview(x,y,time)
 %
 %
 % Parameters:
@@ -27,16 +31,19 @@ function makemovie_slidingplot(x, y, varargin )
 %   'LegendLoc':    Location of legend (default='northeast')
 %   'Grid':         Add a grid, as long as this is not empty it will be
 %                   adding a minor grid and minor as well (default='')
-%   'XTickSize':    Tick Size on the X-axis (default=2)
+%   'XTickSize':    Tick Size on the X-axis (default=1)
 %   'YTickSize':    Tick Size on the X-axis (default=1)
-%   'Downhill':     How much of the curve lagging behind you see (default=8)
-%   'Uphill':       How much empty space upfront you see (default=3)
-%   'Rate':         Rate at which the x-axis moves along (default=0.1)
 %   'Color':        Color of the line (default=[0 0 1], blue)
 %   'YLims':        Y axis limits (default takes absolute maximum based on y vector)
 %   'WidthHeight':  Width and Height of the plot in pixels (default=[1920 1080])
 %   'TextSize':     Size of all text on the plot
 %                   (default=32, this goes along well with the full HD format)
+%
+% TODO 1: Add ability to write time in a text somewhere in the figure
+% TODO 2: include a trail of last few values
+% TODO 3: Add possibility to draw borders
+% TODO 4: (bonus) Add possibility to use figure instead of point. Like a
+% root image instead of just a ball indicating its current position
 %
 % Developed by Mario Coppola
 % December 2016
@@ -49,12 +56,10 @@ labelyaxis = checkifparameterpresent(varargin,'YLabel','','string');
 
 lgnd       = checkifparameterpresent(varargin,'Legend',{},'cell');
 lgndloc    = checkifparameterpresent(varargin,'LegendLoc','northeast','string');
+% arenasize  = checkifparameterpresent(varargin,'Arenasize',[],'array');
 
-xticksize  = checkifparameterpresent(varargin,'XTickSize',2,'number');
+xticksize  = checkifparameterpresent(varargin,'XTickSize',1,'number');
 yticksize  = checkifparameterpresent(varargin,'YTickSize',1,'number');
-downhill   = checkifparameterpresent(varargin,'Downhill',8,'number');
-uphill     = checkifparameterpresent(varargin,'Uphill',3,'number');
-rate       = checkifparameterpresent(varargin,'Rate',0.1,'number');
 grdon      = checkifparameterpresent(varargin,'Grid','','string');
 
 if iscell(x)
@@ -67,6 +72,8 @@ if iscell(x)
     else
         n = n1;
     end
+else
+    n = 1;
 end
 
 c          = checkifparameterpresent(varargin,'Color',repmat([0 0 1],n,1),'array');
@@ -75,12 +82,19 @@ if size(c,1) ~= round(n)
     error('Please define enough colors for all lines')
 end
 
-if n > 1
+if iscell(x)
+    xhigh  = ceil(abs(max(cell2mat(y))));
+else
+    xhigh  = ceil(abs(max(y(:))));
+end
+
+if iscell(y)
     yhigh  = ceil(abs(max(cell2mat(y))));
 else
     yhigh  = ceil(abs(max(y(:))));
 end
 
+xbounds    = checkifparameterpresent(varargin,'YLims',[-xhigh xhigh],'array');
 ybounds    = checkifparameterpresent(varargin,'YLims',[-yhigh yhigh],'array');
 
 plotsize   = checkifparameterpresent(varargin,'WidthHeight',[1920 1080],'array');
@@ -95,57 +109,46 @@ newfigure(handle); %figure with random number
 ha = gcf;
 ha.Visible = 'off'; % Make figure not visible
 
-ur = uphill/rate;
-wsize = downhill + uphill; % total scrolling window size
-wr = wsize/rate;
-
-if n>1
-xtickvec = roundtomultiple(min(cell2mat(x)),xticksize):xticksize:roundtomultiple(max(cell2mat(x)),xticksize)+wsize;
-wvec = roundtomultiple(min(cell2mat(x)),rate):rate:roundtomultiple(max(cell2mat(x)),rate)+wsize+1;
-else
-xtickvec = roundtomultiple(min(x(:)),xticksize):xticksize:roundtomultiple(max(x(:)),xticksize)+wsize;
-wvec = roundtomultiple(min(x(:)),rate):rate:roundtomultiple(max(x(:)),rate)+wsize+1;
-end
+xtickvec = xbounds(1):xticksize:xbounds(2);
 ytickvec = ybounds(1):yticksize:ybounds(2);
 
 open(vidObj);
 
 disp('Rendering your video. This may take some time.')
 
-for i = 1:length(wvec)-wr
+if iscell(time)
+    t = sort(cell2mat(time));
+else
+    t = time;
+end
+
+for i = 1:length(t)
     
     % Plotting a line
-    if n > 1
+    if iscell(x) && iscell(y)
         for q = 1:n
-            j = find(x{q}(:)<(i-1)*rate,1,'last');
+            j = find(time{q}<t(i),1,'last');
             plot(x{q}(1:j),y{q}(1:j),'color',c(q,:)); hold on;
         end
         
         for q = 1:n
-            j = find(x{q}(:)<(i-1)*rate,1,'last');
             % And plotting the value at the current point in time
+            j = find(time{q}<t(i),1,'last');
             plot(x{q}(j),y{q}(j),'.','color',c(q,:),'LineWidth',2,'MarkerSize',20)
         end
     else
-        j = find(x(:)<(i-1)*rate,1,'last');
+        j = find(time<t(i),1,'last');
         plot(x(1:j),y(1:j),'color',c(1,:)); hold on;
         plot(x(j),y(j),'.','color',c(1,:),'LineWidth',2,'MarkerSize',20); hold on; 
     end
     
     % X-window trimming
-    if i>ceil(wr)-ur % moving along
-        xlow = wvec(i)-downhill;%x(j-ceil(dr));
-        xhigh = wvec(i+wr)-downhill;  %;x(j+ceil(ur));
-    else % start (still)
-        xlow = 0;
-        xhigh = ceil(wsize);
-    end
-    xlim([xlow xhigh]);
+    xlim([xbounds(1) xbounds(2)]);
     ylim([ybounds(1) ybounds(2)]);
     
     % Fixing the ticks
     ax = gca;
-    ax.XTick = roundtovector(xlow:xticksize:xhigh,xtickvec);
+    ax.XTick = xtickvec;
     ax.YTick = ytickvec;
     
     % Text

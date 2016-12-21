@@ -1,5 +1,5 @@
 function n = get_linecount(fid)
-%linecount counts the amount of lines in a file
+%get_linecount counts the amount of lines in a text file
 % Use: 		[number of lines (scalar)] = linecount (fid)
 %
 % Mario Coppola, April 2016 
@@ -9,4 +9,5 @@ tline = fgetl(fid);
 while ischar(tline)
 	tline = fgetl(fid);
 n = n+1;
+
 end
