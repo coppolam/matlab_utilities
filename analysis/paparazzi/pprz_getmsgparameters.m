@@ -13,9 +13,19 @@ for i = 1:length(msg)
     msg{i}.end = msg{i}.end(1)+msg{i}.start;
     msg{i}.content = A(msg{i}.start:msg{i}.end);
     msg{i}.elementtypes = strfind(msg{i}.content, 'TYPE="');
+    msg{i}.elementnames = strfind(msg{i}.content, 'NAME="');
+    msg{i}.elementcoef = strfind(msg{i}.content, 'COEF="');
+    msg{i}.elementunit = strfind(msg{i}.content, 'ALT_UNIT="');
     msg{i}.length = length(msg{i}.elementtypes);
-    msg{i}.types = cell(1,msg{i}.length);
+    msg{i}.types  = cell(1,msg{i}.length);
+    msg{i}.coef   = ones(1,msg{i}.length);
     msg{i}.format = [];
+
+    [~,~,coef_idx] = ...
+        intersect(roundtovector(msg{i}.elementcoef,msg{i}.elementnames(2:end),'floor'),...
+        msg{i}.elementnames(2:end));
+    z = zeros(1,msg{i}.length);
+    z(coef_idx) = msg{i}.elementcoef;
     
     % From the textscan documentation:
     %
@@ -35,10 +45,9 @@ for i = 1:length(msg)
     %                                %f32        single
     %                                %f64        double
     %                                %n          double
-    %
     
     for k = 1:msg{i}.length
-        msg{i}.types{k} = msg{i}.content(msg{i}.elementtypes(k)+6:msg{i}.elementtypes(k)+10);
+        msg{i}.types{k} = msg{i}.content(msg{i}.elementtypes(k)+6:msg{i}.elementnames(k+1)-3);
         
         if strcmp(msg{i}.types{k},'int8')
             f = '%d8';
@@ -68,10 +77,15 @@ for i = 1:length(msg)
         
         msg{i}.format = [msg{i}.format, f,' '];
         
+        % Extract scaling factor if present, else scaling factor = 1
+        if z(k)~=0
+            msg{i}.coef(k) = str2double(msg{i}.content(z(k)+6:msg{i}.elementunit(k)-3));
+        end
+            
     end
     
     msg{i}.lines = 1; %% Initializer for later
-    fields = {'start','end','content','elementtypes','types'};
+    fields = {'start','end','content','elementtypes','types','elementnames','elementcoef','elementunit'};
     msg{i} = rmfield(msg{i},fields);
 end
 

@@ -20,7 +20,6 @@ while feof(fid) == 0
             msg{i}.content(msg{i}.lines,:) = textscan(tline,['%f %d %*s ' msg{i}.format],1);
             msg{i}.lines = msg{i}.lines+1;
         end
-        
     end
     
 end
@@ -28,6 +27,11 @@ end
 for i = 1:length(msg)
     fields = {'length','lines'};
     msg{i} = rmfield(msg{i},fields);
+   
+    if ~isfield(msg{i},'own')
+        msg{i}.own = 1;
+    end
+
 end
 
 end

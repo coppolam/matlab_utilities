@@ -5,28 +5,29 @@ addpath (genpath(pwd));
 clc
 
 %% Read data
-
+clear msg
 datafile    = '16_12_03__15_48_35';
-IDlist = [201 202]; % Put here the ID of all MAVs that were flying
 
 % Write here the messages you want to read
-msg{1}.name = 'RAFILTERDATA';
-msg{2}.name = 'ROTORCRAFT_FP';
-msg{3}.name = 'ROTORCRAFT_STATUS';
-msg{4}.name = 'OPTIC_FLOW_EST';
-msg{5}.name = 'GPS_INT';
-
+% msg{2}.name = 'RAFILTERDATA'; msg{1}.own = 0;
+msg{1}.name = 'ROTORCRAFT_FP';
+% msg{3}.nzame = 'ROTORCRAFT_STATUS';
+% msg{4}.name = 'OPTIC_FLOW_EST';
+msg{2}.name = 'GPS_INT';
+ 
 msg = pprz_getmsgdata(msg, ['examplelog/',datafile]);
 
 %% Separate the logs from the different MAVs based on the IDs
-nuavs  = length(IDlist);
+[ IDlist, nuavs, ml, rIDs ] = IDsetup([201,202]);
+rfd  = msg_RAFILTERDATA_bounds();
+[fp] = msg_ROTORCRAFT_FP_bounds();
 
-ml     = 1:nuavs;
+% define primary time vector
 
-rfd         = msg_RAFILTERDATA_bounds();
-[fp,fpscal] = msg_ROTORCRAFT_FP_bounds();
-rIDs        = createallIDXcombinations( nuavs, 'relativefirst' );
+% go over all messages listed
+% extract info needed
 
+clc
 for m = 1:numel(datafile) % for each datafile (in this case only one)
     uav = cell(nuavs,nuavs);    
     uavof = cell(nuavs,nuavs);
@@ -37,61 +38,57 @@ for m = 1:numel(datafile) % for each datafile (in this case only one)
         i = rIDs(idn,1);
         j = rIDs(idn,2);
         
+        
+%         if msg{i}.own == 0
         if i ~= j
+%             
+%             IDs_own = cell2mat(msg{1}.content(:,rfd.ID   ));
+%             IDs_oth = cell2mat(msg{1}.  content(:,rfd.IDoth));
+%             pown   = find(IDs_own == IDlist(i));
+%             poth   = find(IDs_oth == IDlist(j));
+%             p      = intersect(pown,poth);
+%             
+%             uav{i,j} = pprz_msgtostruct(msg{1}, msg_RAFILTERDATA_bounds, p, uav{i,j});
+%             uav{i,j} = clearnonmonotonicmembers(uav{i,j});
+%               
+%             time = uav{1,2}.time;
+%             
+%             uav{i,j}.x = interp1( uav{i,j}.time ,uav{i,j}.x, time, 'linear','extrap');
+% TODO: Make a way so that the bounds function is extracted from the
+% message name
 
-            IDs_own = cell2mat(msg{1}.content(:,rfd.ID   ));
-            IDs_oth = cell2mat(msg{1}.  content(:,rfd.IDoth));
-            pown   = find(IDs_own == IDlist(i));
-            poth   = find(IDs_oth == IDlist(j));
-            p      = intersect(pown,poth);
-            
-            uav{i,j} = pprz_msgtostruct(msg{1}, msg_RAFILTERDATA_bounds, p, uav{i,j});
-            uav{i,j} = clearnonmonotonicmembers(uav{i,j});
-              
-            time = uav{1,2}.time;
-            
-            uav{i,j}.x = interp1( uav{i,j}.time ,uav{i,j}.x, time, 'linear','extrap');
+%             uav{i,j} = pprz_extractdata(uav{i,j}, msg{1}, msg_ROTORCRAFT_FP_bounds, IDlist(i));
 
         else
             
-            % GET REAL DATA           
-            p = findpointswithID(msg{2},IDlist(i));
-            
-            uav{i,i} = pprz_msgtostruct(msg{2}, msg_ROTORCRAFT_FP_bounds, p, uav{i,i});
-
-            uav{i,i}.gt(:,1:2) = uav{i,i}.gt(:,1:2).*fpscal.position;
-            uav{i,i}.gt(:,3:4) = uav{i,i}.gt(:,3:4).*fpscal.velocity;
-            uav{i,i}.gt(:,  5) = uav{i,i}.gt(:,  5).*fpscal.attitude;
-            uav{i,i}.gt(:,  6) = uav{i,i}.gt(:,  6).*fpscal.position;
-            uav{i,i}.z (:,1)   = uav{i,i}.z (:,1)  .*fpscal.position;
+            uav{i,i} = pprz_extractdata(uav{i,i}, msg{1}, IDlist(i));
            
-            uav{i,i} = clearnonmonotonicmembers(uav{i,i},0.1,'time'); % do about half of period % TODO: This could also be extracted automatically
-            uav{i,i}.gt = interp1( uav{i,i}.time ,uav{i,i}.gt, time, 'linear','extrap');
+%             uav{i,i}.gt = interp1( uav{i,i}.time ,uav{i,i}.gt, time, 'linear','extrap');
             
         end
         
     end
     
 end
-
-for m = 1:numel(datafile)
-    
-    for idn = 1:length(rIDs)
-        
-        i = rIDs(idn,1);
-        j = rIDs(idn,2);
-        
-        if i ~= j
-            % Construct the reference (perfect) output of the EKF
-            uav{i,j}.realx(:,1:2) = uav{j,j}.gt(:,[2 1]) - uav{i,i}.gt(:,[2 1]);
-            uav{i,j}.realx(:,3:4) = uav{i,i}.gt(:,[4 3]);
-            uav{i,j}.realx(:,5:6) = uav{j,j}.gt(:,[4 3]);
-            uav{i,j}.realx(:,  7) = uav{j,j}.gt(:,6) - uav{i,i}.gt(:,6);
-        end
-        
-    end
-    
-end
+% 
+% for m = 1:numel(datafile)
+%     
+%     for idn = 1:length(rIDs)
+%         
+%         i = rIDs(idn,1);
+%         j = rIDs(idn,2);
+%         
+%         if i ~= j
+%             % Construct the reference (perfect) output of the EKF
+%             uav{i,j}.realx(:,1:2) = uav{j,j}.gt(:,[2 1]) - uav{i,i}.gt(:,[2 1]);
+%             uav{i,j}.realx(:,3:4) = uav{i,i}.gt(:,[4 3]);
+%             uav{i,j}.realx(:,5:6) = uav{j,j}.gt(:,[4 3]);
+%             uav{i,j}.realx(:,  7) = uav{j,j}.gt(:,6) - uav{i,i}.gt(:,6);
+%         end
+%         
+%     end
+%     
+% end
 
 
 %% Analysis of a flight
