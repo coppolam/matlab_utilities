@@ -1,24 +1,23 @@
 clear all 
 close all
-
 addpath (genpath(pwd));
-clc
 
 %% Read data
-clear msg
-datafile    = '16_12_03__15_48_35';
+clear msg datafile
+datafile{1} = '16_12_03__15_48_35';
 
 % Write here the messages you want to read
 % msg{2}.name = 'RAFILTERDATA'; msg{1}.own = 0;
 msg{1}.name = 'ROTORCRAFT_FP';
-% msg{3}.nzame = 'ROTORCRAFT_STATUS';
-% msg{4}.name = 'OPTIC_FLOW_EST';
 msg{2}.name = 'GPS_INT';
+% msg{3}.name = 'ROTORCRAFT_STATUS';
+% msg{4}.name = 'OPTIC_FLOW_EST';
  
-msg = pprz_getmsgdata(msg, ['examplelog/',datafile]);
+msg = pprz_getmsgdata(msg, ['examplelog/',datafile{1}]);
 
 %% Separate the logs from the different MAVs based on the IDs
-[ IDlist, nuavs, ml, rIDs ] = IDsetup([201,202]);
+clear uav
+[ IDlist, nuavs, ml, rIDs, uav] = IDsetup([201,202]);
 rfd  = msg_RAFILTERDATA_bounds();
 [fp] = msg_ROTORCRAFT_FP_bounds();
 
@@ -27,11 +26,7 @@ rfd  = msg_RAFILTERDATA_bounds();
 % go over all messages listed
 % extract info needed
 
-clc
 for m = 1:numel(datafile) % for each datafile (in this case only one)
-    uav = cell(nuavs,nuavs);    
-    uavof = cell(nuavs,nuavs);
-    uavgps = cell(nuavs,nuavs);
 
     for idn = 1:length(rIDs)
         
@@ -60,9 +55,9 @@ for m = 1:numel(datafile) % for each datafile (in this case only one)
 %             uav{i,j} = pprz_extractdata(uav{i,j}, msg{1}, msg_ROTORCRAFT_FP_bounds, IDlist(i));
 
         else
+%             if msg{i}.own = 1
+            uav{i,i} = pprz_extractdata(uav{i,i}, msg{2}, IDlist(i));
             
-            uav{i,i} = pprz_extractdata(uav{i,i}, msg{1}, IDlist(i));
-           
 %             uav{i,i}.gt = interp1( uav{i,i}.time ,uav{i,i}.gt, time, 'linear','extrap');
             
         end
@@ -70,6 +65,7 @@ for m = 1:numel(datafile) % for each datafile (in this case only one)
     end
     
 end
+disp('done')
 % 
 % for m = 1:numel(datafile)
 %     
