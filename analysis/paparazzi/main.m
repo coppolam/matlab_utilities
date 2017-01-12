@@ -1,5 +1,6 @@
 clear all 
 close all
+run('../../SetupTools')
 addpath (genpath(pwd));
 
 %% Read data
@@ -14,6 +15,6 @@ msg{3}.name = 'OPTIC_FLOW_EST';
 msg{5}.name = 'RAFILTERDATA';
 
 msg = pprz_getmsgdata(msg, ['examplelog/',datafile{1}]);
-uav = pprz_datatomat (msg, [201 202]);
+uav = pprz_datatomat (msg, [201]);
 
 disp('Done!');
