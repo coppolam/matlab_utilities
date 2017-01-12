@@ -27,11 +27,6 @@ end
 for i = 1:length(msg)
     fields = {'length','lines'};
     msg{i} = rmfield(msg{i},fields);
-   
-    if ~isfield(msg{i},'own')
-        msg{i}.own = 1;
-    end
-
 end
 
 end

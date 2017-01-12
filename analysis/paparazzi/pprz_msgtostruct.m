@@ -1,7 +1,7 @@
 function [ var ] = pprz_msgtostruct( msg, horizontal_selection, var)
 %msgtostruct Takes a message structure and writes it to variables according
 %to the bounds in bounds_struct
-keyboard
+
 bounds = feval(['msg_',msg.name,'_bounds']);
 
 if nargin < 3
