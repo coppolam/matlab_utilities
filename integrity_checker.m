@@ -36,13 +36,15 @@ disp('[Tools Dependency Checker closed]')
 disp('   ');
 disp('[Tools Duplicates Checker launched]');
 
+fi = textscan(fopen('filelist.txt'), '%s', inf, 'delimiter', ' ');
+
 for i = 1:size(fi{1},1)
     [start_filename] = strfind(fi{1}(i),'/');
     currentfile = fi{1}(i);
     currentfilestr = currentfile{1}(max(start_filename{end}+1):end);
     fnd = strfind(fi{1}(:),currentfilestr);
-    emptyIndex = cellfun(@isempty,fnd);       %# Find indices of empty cells
-    fnd(emptyIndex) = {0};                    %# Fill empty cells with 0
+    emptyIndex = cellfun(@isempty,fnd);       % Find indices of empty cells
+    fnd(emptyIndex) = {0};                    % Fill empty cells with 0
     [mylogicalarray,mylogicalpos] = find(cell2mat(fnd)>1);  %# Convert the cell array
 
     if length(mylogicalarray) > 1
@@ -51,6 +53,7 @@ for i = 1:size(fi{1},1)
     end
 end
 
+clear fi
 
 disp('[Tools Duplicates Checker closed]')
 disp('   ');
