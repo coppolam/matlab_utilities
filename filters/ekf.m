@@ -30,36 +30,6 @@ function [x,P] = ekf(f,x,P,h,z,Q,R,dt)
 [x_p, A] = getjacobian(f, x); % use latest state
 [z_p, H] = getjacobian(h, x_p); % use predicted state
 
-A = eye(9);
-A(1,3) = -dt;
-A(1,5) = dt;
-A(2,4) = -dt;
-A(2,6) = dt;
-
-H = zeros(8,9);
-H(5:6,5:8) = [
-    cos(x_p(7)-x_p(8)),...
-    -sin(x_p(7)-x_p(8)),...
-    x_p(5)*sin(x_p(8)-x_p(7)) - x_p(6)*cos(x_p(8)-x_p(7)),...
-    x_p(5)*sin(x_p(7)-x_p(8)) + x_p(6)*cos(x_p(7)-x_p(8));
-    sin(x_p(7)-x_p(8)),...
-    cos(x_p(7)-x_p(8)),...
-    (x_p(5)*cos(x_p(8)-x_p(7)) + x_p(6)*sin(x_p(8)-x_p(7))),...
-    -x_p(5)*cos(x_p(7)-x_p(8)) + x_p(6)*sin(x_p(7)-x_p(8)),...
-    ];
-
-H(1,1) = (-2.0*10/log(10))*(x_p(1) / (x_p(1)^2 + x_p(2)^2 + x_p(9)^2));
-H(1,2) = (-2.0*10/log(10))*(x_p(2) / (x_p(1)^2 + x_p(2)^2 + x_p(9)^2));
-H(1,9) = (-2.0*10/log(10))*(x_p(9) / (x_p(1)^2 + x_p(2)^2 + x_p(9)^2));
-
-H(2,3) = 1;
-H(3,4) = 1;
-H(4,7) = 1;
-H(7,8) = 1;
-H(8,9) = 1;
-
-% keyboard
-
 P   	    = A * P * A' + Q;
 
 % Update
