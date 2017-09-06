@@ -5,10 +5,10 @@ This repository contains several general MatLab utilities and functions that are
 ## Set-up
 
 To setup all tools within your main file, you can simply run the [SetupTools.m](SetupTools.m) script with:
-	`run('$MATLABTOOLS/tools/SetupTools.m')`
-Feel free to define the environment variable **$MATLABTOOLS_HOME** as you like or just write the path manually into the command, since this is the only time in which it will be used.
+	`run('<path to tools repository>/SetupTools.m')`
+This will load all the folders so you can use all the functions.
 
-## Consistency checker
+## Integrity checker
 
 Several functions make use of each-other, so it is important to check the integrity of the tool and make sure that all dependencies are met. If you are on a UNIX system, this can be done using the [integrity_checker.m](integrity_checker.m) script (you will have to provide the super-user password).
 
