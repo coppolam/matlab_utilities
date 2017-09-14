@@ -1,26 +1,26 @@
-function [ Q, episode ] = rl_learn(func, statespace, actionspace, param )
+function [ Q, n_episodes ] = rl_learn( rl, statespace, actionspace, varargin )
 % Function to run a reinforcement learning algorithm
 %
 % Developed by Mario Coppola, February 2015
 % E-mail: mariocoppola.92@gmail.com
 
-nstates  = size(statespace,1);
-nactions = size(actionspace,1);
-episode   = 1;
-goodcount = 0;
+n_states   = size(statespace,1);
+n_actions  = size(actionspace,1);
+n_episodes = 1;
+goodcount  = 0;
 
-Q  = checkifparameterpresent(varargin,'learnmode',zeros(nstates,nactions),'array');
+Q  = checkifparameterpresent(varargin,'learnmode',zeros(n_states,n_actions),'array');
 s0 = checkifparameterpresent(varargin,'initialstate',[],'array');
 
+% Run Reinforcement learning episode
 while 1
-    
+    % Random jnitial state
     if isempty(s0)
         s0 = rand(1:255);
     end
     
     Qold = Q;
-    
-    Q = Episode_Learn(func, s0, Q, param,  Ts);
+    Q = rl_episode(rl.model, s0, Q, rl.param, actionspace);
    
     % Based on book by Bobuska (Ch.3, P.68)
     % Looking for a case where the maximum change in theta is small
@@ -36,8 +36,8 @@ while 1
     end
     
     % The e-greedy policy reduces the exploration parameter at each new iteration
-    param.epsilon = param.epsilon * param.egreedy;    
-    episode = episode + 1;
+    rl.param.epsilon = rl.param.epsilon * rl.param.egreedy;    
+    n_episodes = n_episodes + 1;
 end
 
 end

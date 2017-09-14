@@ -1,5 +1,5 @@
-function [ selectedaction , ia] = ...
-    SelectAction_Parametric(theta, actionspace, actionsize, bf, epsilon)
+function [ action_idx ] = ...
+    rl_selectaction(Q, n_actions, state_idx, epsilon)
 % SelectAction selects an action to pursue from the given discrete action
 % space based on the e-greedy method
 % 
@@ -19,14 +19,10 @@ function [ selectedaction , ia] = ...
 t = rand();
 
 if t < epsilon  % Selects a random action
-    selectedaction = actionspace(randperm(actionsize, size(actionspace,2)));
-    ia = ismember(actionspace, selectedaction, 'rows');  
-else % Greedy policy selects the action that maximizes Q
-    Qn = bf' * theta;
-    % Finds the max of Q and its position - Q is viewed as a 1D array
-    [ ~ , ia ] = max(Qn(:));
+    action_idx = randi(n_actions);
     
-    selectedaction = actionspace( ia , : );
+else % Greedy policy selects the action that maximizes Q
+    [~, action_idx] = max(Q(state_idx,:));
 end
 
 end

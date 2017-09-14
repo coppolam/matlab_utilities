@@ -10,4 +10,3 @@ Q  = bf'*theta;
 Qout = Q(ia);
 
 end
-
