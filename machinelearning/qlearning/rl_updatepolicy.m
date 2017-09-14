@@ -1,23 +1,22 @@
-function [ Q, Z ] = rl_updatepolicy ( Q , Z, reward, bf, bfn, ia, iabest, param )
-% UpdatePolicy Updates the linearized Q-function (i.e. the theta matrix)
-% 
+function [ Q, Z ] = rl_updatepolicy ( Q , Z, reward, state_idx, action_idx, ...
+                                            state_idx_learn, action_idx_learn, param )
+% UpdatePolicy Updates the Q-function
+%
 % Developed by Mario Coppola, February 2015
 % E-mail: mariocoppola.92@gmail.com
 
-isn_cell = num2cell(isn);
-Qlr = Q(isn_cell{:},ian(1),ian(2));
-param.alpha = param.alpha * 0.99;
+Q_current  = Q( state_idx,       action_idx       );
+Q_learning = Q( state_idx_learn, action_idx_learn );
 
-Qcurr = Q(is_cell{:},ia(1),ia(2));
+% Temporal Difference
+TDdelta    = reward + param.gamma .* Q_learning - Q_current ;
 
-% Temporal difference
-TDdelta     = ( reward + param.gamma .* Qmax - Qcurr );
-
-% Accumulating eligibility traces
+% Accumulating Eligibility Traces
 Z = param.gamma * param.lambda * Z;
-Z(is_cell{:},ia(1),ia(2)) = 1;
+Z(state_idx, action_idx) = 1;
 
-%See https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2007-49.pdf
+% See https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2007-49.pdf
+param.alpha = param.alpha * 0.99;
 Q = Q + param.alpha * TDdelta * Z;
 
 end
