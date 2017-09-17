@@ -1,12 +1,14 @@
 function [ Q, Z ] = rl_updatepolicy ( Q , Z, reward, state_idx, action_idx, ...
-                                            state_idx_learn, action_idx_learn, param )
+                                            state_idx_n, action_idx_learn, param )
 % UpdatePolicy Updates the Q-function
 %
 % Developed by Mario Coppola, February 2015
 % E-mail: mariocoppola.92@gmail.com
-
-Q_current  = Q( state_idx,       action_idx       );
-Q_learning = Q( state_idx_learn, action_idx_learn );
+state_idx_n
+action_idx_learn
+size(Q)
+Q_current  = Q( state_idx,   action_idx       );
+Q_learning = Q( state_idx_n, action_idx_learn );
 
 % Temporal Difference
 TDdelta    = reward + param.gamma .* Q_learning - Q_current ;
