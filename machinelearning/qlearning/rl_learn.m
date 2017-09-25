@@ -8,32 +8,37 @@ n_episodes  = 1;
 goodcount   = 0;
 
 Q           = checkifparameterpresent(varargin,'Q',...
-                    zeros(n_states,n_actions),'array');
+                     0*ones(n_states,n_actions),'array');
 state_idx_0 = checkifparameterpresent(varargin,'initialstate',...
-                    randi(n_states),'array');
+                    [],'array');
+           
+reward_store = [];
 
-while 1
+while goodcount < 100 && n_episodes < 5000
+    
+    [ state_idx ] = rl_starting_state( state_idx_0, n_states );
     
     Qold = Q;
-    Q    = rl_episode(rl.model, rl.reward, state_idx_0, Q, rl.param, n_actions);
+    [Q, reward, flag] = rl_episode(rl.model, rl.reward, rl.flag, state_idx, Q, rl.param, n_actions);
    
     % Based on book by Bobuska (Ch.3, P.68)
     % Looking for a case where the maximum change in theta is small
     % We look for 10 consecutive times just to avoid falling for anomalies
     adiff = max(abs(Qold-Q));
-    if (max(adiff) < 0.01)
+    if (max(adiff) < 0.001)
         goodcount = goodcount + 1;
-        if goodcount > 10
-            break; % A sub-optimal solution has been reached!
-        end
     else
-        goodcount = 0; % Restart counter
+        goodcount = 0;
     end
     
     % The e-greedy policy reduces the exploration parameter at each new iteration
     rl.param.epsilon = rl.param.epsilon * rl.param.egreedy;    
+    reward_store = [reward_store, reward];
     n_episodes = n_episodes + 1;
     
+
+    plot(1:n_episodes-1,reward_store)
+    drawnow
 end
 
 end

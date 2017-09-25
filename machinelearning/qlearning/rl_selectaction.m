@@ -1,5 +1,4 @@
-function [ action_idx ] = ...
-    rl_selectaction(Q, n_actions, state_idx, epsilon)
+function [ action_idx ] = rl_selectaction(Q, n_actions, state_idx, epsilon)
 % SelectAction selects an action to pursue from the given discrete action
 % space based on the e-greedy method
 %
@@ -8,12 +7,10 @@ function [ action_idx ] = ...
 
 t = rand();
 
-if t < epsilon  % Selects a random action
+if t < epsilon  % Random
     action_idx = randi(n_actions);
-    
-else % Greedy policy selects the action that maximizes Q
+else % Greedy
     [~, action_idx] = max(Q(state_idx,:));
 end
 
 end
-

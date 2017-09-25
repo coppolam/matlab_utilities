@@ -3,3 +3,7 @@
 
 # Dependency Checker
 filelist.txt
+
+# Log files
+*.data
+*.log
