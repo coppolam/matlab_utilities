@@ -1,44 +1,37 @@
-function [ Q, n_episodes ] = rl_learn( rl, n_states, n_actions, varargin )
+function [ Q, rl, n_episodes ] = rl_learn( rl, varargin )
 % Function to run a reinforcement learning algorithm
-%
-% Developed by Mario Coppola, February 2015
-% E-mail: mariocoppola.92@gmail.com
 
-n_episodes  = 1;
-goodcount   = 0;
+n_episodes   = 0;
+conv_count   = 0;
+stop_flag    = 0;
 
-Q           = checkifparameterpresent(varargin,'Q',...
-                     0*ones(n_states,n_actions),'array');
-state_idx_0 = checkifparameterpresent(varargin,'initialstate',...
-                    [],'array');
-           
-reward_store = [];
+Q           = checkifparameterpresent(varargin,'Q',zeros(rl.n_states,rl.n_actions),'array');
+state_idx_0 = checkifparameterpresent(varargin,'initialstate',1,'array');
 
-while goodcount < 100 && n_episodes < 5000
-    
-    [ state_idx ] = rl_starting_state( state_idx_0, n_states );
-    
-    Qold = Q;
-    [Q, reward, flag] = rl_episode(rl.model, rl.reward, rl.flag, state_idx, Q, rl.param, n_actions);
-   
-    % Based on book by Bobuska (Ch.3, P.68)
-    % Looking for a case where the maximum change in theta is small
-    % We look for 10 consecutive times just to avoid falling for anomalies
-    adiff = max(abs(Qold-Q));
-    if (max(adiff) < 0.001)
-        goodcount = goodcount + 1;
-    else
-        goodcount = 0;
-    end
-    
-    % The e-greedy policy reduces the exploration parameter at each new iteration
-    rl.param.epsilon = rl.param.epsilon * rl.param.egreedy;    
-    reward_store = [reward_store, reward];
+newfigure(4);
+
+while stop_flag == 0
     n_episodes = n_episodes + 1;
     
-
-    plot(1:n_episodes-1,reward_store)
-    drawnow
+    [Qn, rl, reward, n_steps] = rl_episode( rl, state_idx_0, Q );
+    [stop_flag, Q, conv_count] = stoppingcriteria( n_episodes, conv_count, Q, Qn );
+    
+    reward_store(n_episodes) = reward;
+    epsstore(n_episodes) = rl.param.epsilon;
+    nstepsstore(n_episodes) = n_steps;
+    
+    disp(['Episode ', num2str(n_episodes), ...
+        ' reward = ', num2str(reward),...
+        ' nsteps = ', num2str(n_steps)])
 end
+
+newfigure(3);
+figure(3)
+plot(1:length(reward_store), reward_store,'b'); hold on
+plot(1:length(epsstore), epsstore*100,'r'); hold on
+plot(1:length(nstepsstore), nstepsstore,'k');
+xlabel('Episodes')
+ylabel('Reward')
+drawnow;
 
 end

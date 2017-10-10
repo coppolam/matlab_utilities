@@ -1,16 +1,21 @@
-function [ action_idx ] = rl_selectaction(Q, n_actions, state_idx, epsilon)
+function [ action_idx ] = rl_selectaction(Q, state_idx, epsilon)
 % SelectAction selects an action to pursue from the given discrete action
 % space based on the e-greedy method
-%
-% Developed by Mario Coppola, February 2015
-% E-mail: mariocoppola.92@gmail.com
+
+global Qfull
 
 t = rand();
+possibleactions = find(abs(Qfull(state_idx,:))>0);
 
-if t < epsilon  % Random
-    action_idx = randi(n_actions);
+if t < epsilon % Random
+    if (length(possibleactions) > 1)
+        action_idx = randsample(possibleactions, 1);
+    else
+        action_idx = possibleactions;
+    end
 else % Greedy
-    [~, action_idx] = max(Q(state_idx,:));
+    [~, action_idx] = max(Q(state_idx,possibleactions));
+    action_idx = possibleactions(action_idx);
 end
 
 end
