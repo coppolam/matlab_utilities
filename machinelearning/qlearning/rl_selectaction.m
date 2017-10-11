@@ -1,4 +1,4 @@
-function [ action_idx ] = rl_selectaction(Q, state_idx, epsilon)
+function [ action_idx, possibleactions ] = rl_selectaction(Q, state_idx, epsilon)
 % SelectAction selects an action to pursue from the given discrete action
 % space based on the e-greedy method
 
