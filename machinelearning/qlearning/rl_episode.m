@@ -18,7 +18,7 @@ state_global_n = state_global;
 selected_agent_last_step = 0;
 stop_flag = 0;
 
-if record || nargout > 3
+if record || find_deadlocks || nargout > 4
     selected_agent_state_history  = [];
     selected_agent_action_history = [];
     local_state_store             = [];
@@ -37,11 +37,17 @@ while stop_flag == 0 && n_steps < maxsteps
         break;
     end
     
-    for i = 1:numel(agents_that_can_move)
-        action_idx = rl_selectaction (Q, state_local(agents_that_can_move(i)), rl.param.epsilon );
-        state_global_n(agents_that_can_move(i),:) = rl.model (state_global(agents_that_can_move(i),:), action_idx);
+%     for i = 1:numel(agents_that_can_move)
+        action_idx = rl_selectaction (Q, state_local(selected_agent), rl.param.epsilon );
+        state_global_n(selected_agent,:) = rl.model (state_global(selected_agent,:), action_idx);
+%     end
+    
+    if  size(unique(state_global_n, 'rows', 'first'),1) < size(state_global_n,1)
+        reward = -100;
+        flag = -1;
+        break;
     end
-    agents_that_can_move
+
     state_local_n = globalstate_to_observation(rl, state_global_n)
     happy = local_evaluation(rl,state_local_n);
     reward = -1;
@@ -61,6 +67,7 @@ while stop_flag == 0 && n_steps < maxsteps
     if visualize
         plot_formation(state_global_n);
     end
+
     
     state_global = state_global_n;
     
@@ -89,6 +96,8 @@ while stop_flag == 0 && n_steps < maxsteps
     end
     
     selected_agent_last_step = selected_agent;
+    
+
 end
 
 if record || nargout > 3
