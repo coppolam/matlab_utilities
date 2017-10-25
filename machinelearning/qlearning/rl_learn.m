@@ -10,6 +10,7 @@ state_global_0 = checkifparameterpresent(varargin,'initialstate',1,'array');
 visualize      = checkifparameterpresent(varargin,'visualize',0,'array');
 verbose        = checkifparameterpresent(varargin,'verbose',0,'array');
 randomized     = checkifparameterpresent(varargin,'randomized',1,'array');
+learn          = checkifparameterpresent(varargin,'learn',1,'array');
 
 if visualize
     newfigure(3);
@@ -19,7 +20,8 @@ end
 while stop_flag == 0
     stats.n_episodes = stats.n_episodes + 1;
     
-    [Qn, rl, reward, n_steps] = rl_episode(rl, state_global_0, Q, 'visualize', visualize);
+    [Qn, rl, reward, n_steps] = rl_episode(rl, state_global_0, Q, ...
+        'learn', learn,'visualize', visualize);
     
     if ~randomized
         rl.param.epsilon = rl.param.epsilon * rl.param.egreedy;
