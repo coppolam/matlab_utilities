@@ -1,4 +1,4 @@
-function [boundary_index_locations] = get_shape_boundary( state_global )
+function [boundary_index_locations, agentlocations] = get_shape_boundary( state_global )
 
 % Reset to (0,0)
 agentlocations = state_global-state_global(1,:);
