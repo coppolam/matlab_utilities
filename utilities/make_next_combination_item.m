@@ -1,15 +1,14 @@
-function c_next = make_next_combination_item(c)
+function c_next = make_next_combination_item(c_item, n_max)
 
-i = find(c<=4,1,'last');
-if c(i)+1 > 4
-    i = find(c<4,1,'last');
-    c(i) = c(i)+1;
-    c(i+1:end) = c(i);
+i = find(c_item<=n_max,1,'last');
+if c_item(i)+1 > 4
+    i = find(c_item<n_max,1,'last');
+    c_item(i) = c_item(i)+1;
+    c_item(i+1:end) = c_item(i);
 else
-    c(i) = c(i)+1;
+    c_item(i) = c_item(i)+1;
 end
 
-c_next = c;
+c_next = c_item;
 
 end
-
