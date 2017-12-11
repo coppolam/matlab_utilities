@@ -30,6 +30,7 @@ while stop_flag == 0
     stats.rewards(stats.n_episodes) = reward;
     stats.epsilon(stats.n_episodes) = rl.param.epsilon;
     stats.n_steps(stats.n_episodes) = n_steps;
+    stats.sum_happy{stats.n_episodes} = sum_happy;
     
     if verbose
     disp(['Episode ', num2str(stats.n_episodes), ...
