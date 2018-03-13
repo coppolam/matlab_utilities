@@ -29,7 +29,7 @@ elseif strcmp(mode,'paper_ultrawide_third')
 elseif strcmp(mode, 'paper_wide_half')
     w = 8;
     h = 4;
-    f = 18;
+    f = 24;
 elseif strcmp(mode, 'paper_square_half')
     w = 8;
     h = 8;
