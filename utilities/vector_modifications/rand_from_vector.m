@@ -15,5 +15,5 @@ else
         selected = vector;
     end
 end
-end
 
+end
