@@ -43,5 +43,5 @@ if nargin==2,
   dim = min(find(size(x)~=1));
   if isempty(dim), dim = 1; end
 end
-keyboard
+
 y = sum(w.*x,dim)./sum(w,dim);
