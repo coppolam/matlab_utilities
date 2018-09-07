@@ -34,7 +34,10 @@ elseif strcmp(mode, 'paper_square_half')
     w = 8;
     h = 8;
     f = 18;
-    
+elseif strcmp(mode, 'paper_square_half_HD')
+    w = 8*3;
+    h = 8*3;
+    f = 18*3;
 elseif strcmp(mode, 'paper_square_fourth')
     w = 8;
     h = 8;

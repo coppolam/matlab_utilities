@@ -33,7 +33,7 @@ if ~exist('fontsize','var')
     fontsize        = 20;
 end
 if ~exist('outtype','var')
-    outtype = '-depsc2'; % File format for latex
+    outtype = '-dpng'; % File format for latex
 end
 if ~exist('folder','var')
     outtype = ''; % File format for latex
@@ -52,8 +52,7 @@ set(ha_legend, 'fontsize', fontsize);
 set(ha_text, 'fontsize', fontsize);
 
 filename = latex_checkfilename(filename); % Check if filename is Latex ready
-
 %use -opengl if you have opaque things
-print(handle,outtype,filename) % Prints the figure
+print(handle,outtype,filename,'-loose') % Prints the figure
 
 end
