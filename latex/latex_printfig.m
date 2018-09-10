@@ -33,7 +33,7 @@ if ~exist('fontsize','var')
     fontsize        = 20;
 end
 if ~exist('outtype','var')
-    outtype = '-dpng'; % File format for latex
+    outtype = '-depsc2'; % File format for latex
 end
 if ~exist('folder','var')
     outtype = ''; % File format for latex
