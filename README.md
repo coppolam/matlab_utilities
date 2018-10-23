@@ -12,7 +12,7 @@ This will load all the folders so you can use all the functions.
 
 Several functions make use of each-other, so it is important to check the integrity of the tool and make sure that all dependencies are met. If you are on a UNIX system, this can be done using the [integrity_checker.m](integrity_checker.m) script (you will have to provide the super-user password).
 
-The script also checks for potential duplicate files (based on filename), so as to make sure that no duplicates are present.
+The script also checks for potential duplicate files (based on filename).
 
 ## Contributing
 
