@@ -62,9 +62,8 @@ while residual >= tol
     if nargin <= 3
         D  = a*v';        % Dangling node teleportation matrix
         E  = ones(1,n)*v; % Teleportation matrix
-        keyboard
     end
-    pr = pr * (alpha .* (H + D) + (1 - alpha) .* E);
+    pr = pr * (alpha * (H + D) + (eye(size(alpha)) - alpha) * E);
     
     residual = norm ( pr - pr_previous, 1 );
 end
