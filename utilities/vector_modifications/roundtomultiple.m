@@ -1,4 +1,4 @@
-function x = roundtomultiple( x , m )
+function x = roundtomultiple( x , m, mode)
 %roundtomultiple, rounds the first number to the closest number that is a
 %multiple of the second input. Both inputs should be scalar.
 %
@@ -6,7 +6,15 @@ function x = roundtomultiple( x , m )
 %
 % Vectors/Matrices are also accepted
 
-x = round(x./m).*m;
+if nargin < 3
+    x = round(x./m).*m;
+elseif strcmp(mode,'floor')
+    x = round(x./m).*m;
+elseif strcmp(mode,'ceil')
+    x = round(x./m).*m;
+else
+    error('Unknown rounding mode')
+end
 
 end
 
