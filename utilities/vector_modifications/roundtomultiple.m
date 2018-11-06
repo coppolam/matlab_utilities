@@ -9,9 +9,9 @@ function x = roundtomultiple( x , m, mode)
 if nargin < 3
     x = round(x./m).*m;
 elseif strcmp(mode,'floor')
-    x = round(x./m).*m;
+    x = floor(x./m).*m;
 elseif strcmp(mode,'ceil')
-    x = round(x./m).*m;
+    x = ceil(x./m).*m;
 else
     error('Unknown rounding mode')
 end
