@@ -35,14 +35,13 @@ tol = 1e-8; % convergence tolerance (scalar, e.g. 1e-8)
 % Personalization vector default
 if nargin < 3
     v = 1/n * ones(n,1);
+    % Get "a" vector, where a(i)=1, if row i is dangling node and 0
+    rowsumvector = ones(1,n)*H';
+    nonzerorows  = find(rowsumvector);
+    zerorows     = setdiff(1:n,nonzerorows);
+    l            = length(zerorows);
+    a            = sparse(zerorows,ones(l,1),ones(l,1),n,1);
 end
-
-% Get "a" vector, where a(i)=1, if row i is dangling node and 0
-rowsumvector = ones(1,n)*H';
-nonzerorows  = find(rowsumvector);
-zerorows     = setdiff(1:n,nonzerorows);
-l            = length(zerorows);
-a            = sparse(zerorows,ones(l,1),ones(l,1),n,1);
 
 % Iterative procedure
 i = 0;
