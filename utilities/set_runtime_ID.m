@@ -7,8 +7,8 @@ runtimeID = str2double(input(prompt,'s'));
 
 if isnan(runtimeID)
     runtimeID  = randi(10000);
-    fprintf('\nMy random runtime ID is %d',runtimeID);
 end
 
+fprintf('\nMy random runtime ID is %d',runtimeID);
 
 end

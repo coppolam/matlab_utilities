@@ -26,8 +26,8 @@ n = size(H,1);
 pr_0 = 1/n * ones(1,n);
 
 % Make sure H is normalized
-H = H./sum(H,2);
-H(isnan(H)) = 0;
+% H = H./sum(H,2);
+% H(isnan(H)) = 0;
 
 % Tolerance
 tol = 1e-8; % convergence tolerance (scalar, e.g. 1e-8)
@@ -62,7 +62,10 @@ while residual >= tol
         D  = a*v';        % Dangling node teleportation matrix
         E  = ones(1,n)*v; % Teleportation matrix
     end
-    pr = pr * (alpha * (H + D) + (eye(size(alpha)) - alpha) * E);
+    G = (alpha * (H + D) + (eye(size(alpha)) - alpha) * E);
+    G = G./sum(G,2);
+    G(isnan(G)) = 0;
+    pr = pr * G;
     
     residual = norm ( pr - pr_previous, 1 );
 end
