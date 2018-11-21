@@ -10,12 +10,12 @@ function [pr,i] = pagerank(H,alpha,v,D,E)
 %   H     = row-normalized hyperlink matrix (n-by-n sparse matrix)
 %   alpha = follow probability, scalar scaling parameter in PageRank model (scalar), 
 %   v     = teleportation vector (1-by-n row vector)
-%   D     = 
-%   E     = 
+%   D     = Dangling node matrix
+%   E     = Teleportation matrix (can be defined instead of v)
 %
 % OUTPUT:
 %   pr = PageRank vector
-%   i  = iteration
+%   i  = Number of iterations
 %
 % Adapted from Langville et al., Google's PageRank and beyond, 2006
 %
@@ -29,9 +29,6 @@ pr_0 = 1/n * ones(1,n);
 H = H./sum(H,2);
 H(isnan(H)) = 0;
 
-% Tolerance
-tol = 1e-8; % convergence tolerance (scalar, e.g. 1e-8)
-
 % Personalization vector default
 if nargin < 3
     v = 1/n * ones(n,1);
@@ -44,12 +41,13 @@ if nargin < 3
 end
 
 % Iterative procedure
-i = 0;
-pr = pr_0;
-residual = 1;
+i = 0;        % Counter
+pr = pr_0;    % Pagerank
+residual = 1; % Residual (initialize high, doesn't really matter)
+tol = 1e-8;   % Convergence tolerance (scalar, e.g. 1e-8)
 while residual >= tol
-    pr_previous = pr;
     i = i+1;
+    pr_previous = pr;
     % The following two are equivalent. One is the one from the book
     % the other one is just organized such that the random and follow items
     % are more clearly separated into terms 1 and 2.
@@ -62,7 +60,7 @@ while residual >= tol
         D  = a*v';        % Dangling node teleportation matrix
         E  = ones(1,n)*v; % Teleportation matrix
     end
-%   G = (alpha * (H + D) + (eye(size(alpha)) - alpha) *  E + diag(S) );
+    % Calculate the Pagerank, pr = pr * G
     pr = pr * (alpha * (H + D) + (eye(size(alpha)) - alpha) *  E);
     
     residual = norm ( pr - pr_previous, 1 );
