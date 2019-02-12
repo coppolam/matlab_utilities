@@ -53,6 +53,6 @@ set(ha_text, 'fontsize', fontsize);
 
 filename = latex_checkfilename(filename); % Check if filename is Latex ready
 %use -opengl if you have opaque things
-print(handle,outtype,filename,'-loose') % Prints the figure
+print(handle,outtype,filename,'-loose','-painters') % Prints the figure
 
 end
