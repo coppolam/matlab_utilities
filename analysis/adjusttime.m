@@ -20,7 +20,7 @@ function [ data ] = adjusttime( data , members , trial, tol, timefieldname)
 ml = 1:members;
 
 if (members < 2)
-    warning('Adjusting time... but there is no point since you only have 1 member. Function is quitting.');
+%    warning('Adjusting time... but there is no point since you only have 1 member. Function is quitting.');
     return
 end
 
